@@ -1,7 +1,7 @@
 TTGO_T_Watch_Web_Mic <br/><br/>
 本项目原型参考 https://github.com/paranerd/simplecam <br/> 
 原始项目有个技能, 树莓派带mic,通过网页把声音传给访问端<br/>
-看到后感觉比较有意思,就移植到了esp32上, 正好手上有个TTGO_T_Watch 代码移植上来试了下效果, 非常黑科技。 <br/>
+看到后感觉比较有意思,就移植到了esp32上, 正好手上有个TTGO_T_Watch 把代码烧录上测试了效果,很满意,非常黑科技。 <br/>
 
 功能：<br/>
 利用本程序，esp32充当HTML远程麦克风

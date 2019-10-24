@@ -1,10 +1,9 @@
-TTGO_T_Watch_Web_Mic <br/>
+TTGO_T_Watch_Web_Mic <br/><br/>
 本项目原型参考 https://github.com/paranerd/simplecam 技术点是树莓派生成网页,并可以通过网页访问麦克风的声音.
 仅仅把声音功能移植到了TTGO_T_Watch, 非常黑科技。
 
 功能：<br/>
 利用本程序，esp32充当HTML远程麦克风
-暂不支持并发,前一个人在使用,后一个人就访问不了.必须关掉前一个,后一个才能用.
 
 示意图:<br/>
 <img src= 'https://raw.githubusercontent.com/lixy123/TTGO_T_Watch_Web_Mic/master/jiagou.jpg' /> <br/>
@@ -34,5 +33,5 @@ TTGO_T_Watch_Web_Mic <br/>
 
 高级用法: <br/>
 外网穿透<br/>
-1.将192.168.1.100的端口80, 1331用 frp软件进行内网穿透
-2.访问内网穿透后的地址.
+1.将192.168.1.100的端口80, 1331用 frp软件进行内网穿透<br/>
+2.访问内网穿透后的地址.<br/>

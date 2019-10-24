@@ -4,16 +4,14 @@ TTGO_T_Watch_Web_Mic <br/>
 
 功能：<br/>
 利用本程序，esp32充当HTML远程麦克风
+暂不支持并发,前一个人在使用,后一个人就访问不了.必须关掉前一个,后一个才能用.
 
 示意图:<br/>
+<img src= 'https://raw.githubusercontent.com/lixy123/TTGO_T_Watch_Web_Mic/master/jiagou.jpg' /> <br/>
 
 硬件:<br/>
   TTGO T-Watch + 语音扩展板(用到板上的INMP441 I2S麦克风模块)<br/>
   其它普通的esp32也可以,需要连接一个INMP441 I2S麦克风模块 <br/>
-
-使用场景：<br/>
-没想好,娱乐,先做出来再说.<br/>
-做对讲机应该可以.<br/>
 
 代码编译:<br/>
 1.调整代码中的路由器参数,固定ip参数.<br/>
@@ -25,9 +23,14 @@ TTGO_T_Watch_Web_Mic <br/>
 4.板选择: ESP32 Dev Module <br/>
 5.选好端口,编译并烧写到TTGO T-Watch<br/>
 
+使用场景：<br/>
+没想好,娱乐,先做出来再说.<br/>
+做对讲机应该可以.<br/>
+
 使用方法: <br/>
 1.在电脑或手机上打开浏览器.电脑上建议用chrome浏览器.输入 http://192.168.1.100<br/>
 2.点击界面上的切换按钮,点一次是播放声音,再点一次是关闭播放声音.<br/>
+<img src= 'https://raw.githubusercontent.com/lixy123/TTGO_T_Watch_Web_Mic/master/remote_mic_web.jpg' />
 
 高级用法: <br/>
 外网穿透<br/>

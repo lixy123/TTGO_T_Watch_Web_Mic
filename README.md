@@ -43,5 +43,6 @@ TTGO_T_Watch_Web_Mic <br/><br/>
 如果要做得好,对声音要进行降噪处理,要对网络中断自动重连等,提升稳定性. <br/>
 个人做着玩就不需要这么多讲究了. <br/>
 
-
+演示视频地址 <br/>
+ https://github.com/lixy123/TTGO_T_Watch_Web_Mic/blob/master/VID_20191116_144222.mp4
 

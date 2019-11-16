@@ -66,10 +66,10 @@ class Player {
 
     //将传入的16000频率的声音数据转成48000频率的声音数据
     //this.audioCtx.sampleRate 大部分都在48000hz
-    interleave(e){
+    interleave(my_sampleRate,e){
       let t = e.length;
       let sampleRate = 16000.0 ;
-      let outputSampleRate = this.audioCtx.sampleRate;
+      let outputSampleRate = my_sampleRate; //this.audioCtx.sampleRate;
       let s = 0;
       let o = sampleRate / outputSampleRate;
       let u = Math.ceil(t * outputSampleRate / sampleRate);      
@@ -90,8 +90,9 @@ class Player {
 		//将传入的blob转换成 Float32Array对象 
         var reader = new FileReader(); 
         var my_audioQueue= this.audioQueue;
-        var my_int16ToFloat32= this.int16ToFloat32
+        var my_int16ToFloat32= this.int16ToFloat32;
         var my_interleave= this.interleave;
+        var my_sampleRate= this.audioCtx.sampleRate;
         reader.onload = function(e) {
            //console.log(reader.result); 
            let new_chunk=reader.result;          
@@ -102,7 +103,7 @@ class Player {
            //16位对象转32位对象                
            let array = my_int16ToFloat32(testDataInt,0,testDataInt.length);
            //16000hz 转 48000hz
-           array= my_interleave(array);           
+           array= my_interleave(my_sampleRate,array);           
            //console.log(array.length,array);  
            console.log("get wav bytes:",array.length);
            //B.如果输入是: 48000hz 16位声音数据

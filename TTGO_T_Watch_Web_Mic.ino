@@ -45,10 +45,10 @@ void onWebSocketEvent(uint8_t client_num,
   //但同一函数在执行时，可以并发另一函数事件
   //所以如果在供给一个函数mic输出时， 其它用户是进入不了的！
 
-  int32_t low_sound = 10;   //声音下限 低于此值的声音数据截掉
-  int32_t high_sound = 5000; //声音上限 高于此值的声音数据截掉
+  int32_t low_sound = 20;   //声音下限 低于此值的声音数据截掉  推荐20
+  int32_t high_sound = 5000; //声音上限 高于此值的声音数据截掉 推荐5000
 
-  int add_sound = 40; //音量加倍系数
+  int add_sound = 30; //音量加倍系数 推荐40
 
   File  wav_file ;
 
@@ -60,7 +60,7 @@ void onWebSocketEvent(uint8_t client_num,
       if (connect_no == client_num)
       {
         sound_skip = true;
-        Serial.printf("client:[%u] trigger stop wav\n",client_num);
+        Serial.printf("client:[%u] trigger stop wav\n", client_num);
       }
       break;
 
@@ -68,7 +68,7 @@ void onWebSocketEvent(uint8_t client_num,
     case WStype_CONNECTED:
       {
         IPAddress ip = webSocket.remoteIP(client_num);
-        Serial.printf("client:[%u] Connection from %s\n", client_num,ip.toString().c_str());
+        Serial.printf("client:[%u] Connection from %s\n", client_num, ip.toString().c_str());
         //Serial.println();
       }
       break;
@@ -76,7 +76,7 @@ void onWebSocketEvent(uint8_t client_num,
     // Handle text messages from client
     case WStype_TEXT:
 
-     
+
 
       // Print out raw message
       //Serial.printf("client:[%u] [%u] seconds: %s\n",client_num, length,  payload);
@@ -90,15 +90,15 @@ void onWebSocketEvent(uint8_t client_num,
       //Serial.println("tmpstr=" + tmpstr);
       sound_second = tmpstr.toInt();
       //Serial.println("");
-      Serial.printf("client:[%u] request [%u] seconds\n", client_num,sound_second);
+      Serial.printf("client:[%u] request [%u] seconds\n", client_num, sound_second);
 
       Serial.printf("client:[%u] begin send wav sound ...\n", client_num );
 
-     
+
       //如果声音秒数是负数，表示中断上次连接
       if (sound_second < 0)
       {
-        Serial.printf("client:[%u] sound_second<0\n",client_num);
+        Serial.printf("client:[%u] sound_second<0\n", client_num);
         sound_skip = true;
         break;
       }
@@ -124,7 +124,7 @@ void onWebSocketEvent(uint8_t client_num,
           //  yield();
           if (sound_skip == true)
           {
-            Serial.printf("client:[%u] skip send wav sound ...\n",client_num);
+            Serial.printf("client:[%u] skip send wav sound ...\n", client_num);
             break;
           }
           I2S_Read(communicationData, numCommunicationData);
@@ -136,6 +136,12 @@ void onWebSocketEvent(uint8_t client_num,
             val2 = communicationData[loop1 * 2 + 1] ;
             val16 = val1 + val2 *  256;
 
+            //低于下限的噪音，去除
+            if (abs(val16) < low_sound )
+            {
+              val16 = 0;
+            }
+            
             //add_sound 配置成40最合适
             //乘以40 ：音量提升20db
             tmpval = val16 * add_sound;
@@ -149,25 +155,6 @@ void onWebSocketEvent(uint8_t client_num,
 
             //对声音设置上下限
             //防止噪音
-            //if (abs(tmpval) > high_sound)
-            // tmpval = high_sound;
-
-            //Serial.println(String(val1) + " " + String(val2) + " " + String(val16) + " " + String(tmpval));
-            communicationData[loop1 * 2] =  (byte)(tmpval & 0xFF);
-            communicationData[loop1 * 2 + 1] = (byte)((tmpval >> 8) & 0xFF);
-          }
-
-          /*
-            //for  排除噪音 (省去)
-            for (int loop1 = 0; loop1 < numCommunicationData / 2 ; loop1++)
-            {
-            val1 = communicationData[loop1 * 2];
-            val2 = communicationData[loop1 * 2 + 1] ;
-            val16 = val1 + val2 *  256;
-
-            //将高于指定音量，低于指定音量的数据排除
-
-            tmpval = val16 * 1;
             //高于上限的噪音去除
             if (abs(tmpval) > high_sound )
             {
@@ -175,19 +162,14 @@ void onWebSocketEvent(uint8_t client_num,
                 tmpval = high_sound;
               else
                 tmpval = -high_sound;
-            }
-
-            //低于下限的噪音，去除
-            if (abs(tmpval) < low_sound )
-            {
-              tmpval = 0;
-            }
+            }           
 
             //Serial.println(String(val1) + " " + String(val2) + " " + String(val16) + " " + String(tmpval));
             communicationData[loop1 * 2] =  (byte)(tmpval & 0xFF);
             communicationData[loop1 * 2 + 1] = (byte)((tmpval >> 8) & 0xFF);
-            }
-          */
+          }
+
+
 
           //传输声音文件主体
           webSocket.sendBIN(client_num, (uint8_t *)communicationData, numCommunicationData);
@@ -226,6 +208,12 @@ void onWebSocketEvent(uint8_t client_num,
             val2 = communicationData[loop1 * 2 + 1] ;
             val16 = val1 + val2 *  256;
 
+            //低于下限的噪音，去除
+            if (abs(val16) < low_sound )
+            {
+              val16 = 0;
+            }
+            
             //add_sound 配置成40最合适
             //乘以40 ：音量提升20db
             tmpval = val16 * add_sound;
@@ -239,25 +227,6 @@ void onWebSocketEvent(uint8_t client_num,
 
             //对声音设置上下限
             //防止噪音
-            //if (abs(tmpval) > high_sound)
-            // tmpval = high_sound;
-
-            //Serial.println(String(val1) + " " + String(val2) + " " + String(val16) + " " + String(tmpval));
-            communicationData[loop1 * 2] =  (byte)(tmpval & 0xFF);
-            communicationData[loop1 * 2 + 1] = (byte)((tmpval >> 8) & 0xFF);
-          }
-
-          /*
-            //for  排除噪音  (省去)
-            for (int loop1 = 0; loop1 < numCommunicationData / 2 ; loop1++)
-            {
-            val1 = communicationData[loop1 * 2];
-            val2 = communicationData[loop1 * 2 + 1] ;
-            val16 = val1 + val2 *  256;
-
-            //将高于指定音量，低于指定音量的数据排除
-
-            tmpval = val16 * 1;
             //高于上限的噪音去除
             if (abs(tmpval) > high_sound )
             {
@@ -267,18 +236,14 @@ void onWebSocketEvent(uint8_t client_num,
                 tmpval = -high_sound;
             }
 
-            //低于下限的噪音，去除
-            if (abs(tmpval) < low_sound )
-            {
-              tmpval = 0;
-            }
+          
 
             //Serial.println(String(val1) + " " + String(val2) + " " + String(val16) + " " + String(tmpval));
             communicationData[loop1 * 2] =  (byte)(tmpval & 0xFF);
             communicationData[loop1 * 2 + 1] = (byte)((tmpval >> 8) & 0xFF);
-            }
-          */
+          }
 
+        
           //传输声音文件主体
           webSocket.sendBIN(client_num, (uint8_t *)communicationData, numCommunicationData);
           //webSocket.broadcastBIN((uint8_t *)communicationData, numCommunicationData, false);
@@ -320,8 +285,8 @@ void onCSSRequest(AsyncWebServerRequest * request) {
 
 void onjs_jqueryRequest(AsyncWebServerRequest * request) {
   IPAddress remote_ip = request->client()->remoteIP();
- // Serial.println("[" + remote_ip.toString() +
- //                "] HTTP GET request of " + request->url());
+  // Serial.println("[" + remote_ip.toString() +
+  //                "] HTTP GET request of " + request->url());
   request->send(SPIFFS, "/jquery-3.4.1.min.js", "text/javascript");
 }
 
